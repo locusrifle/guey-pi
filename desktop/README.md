@@ -19,10 +19,10 @@ Linux binary.
 
 ## Download, run and install
 
-No release is published yet. A maintainer builds the local archive with
-`npm run build:desktop` (npm registry access, GNU tar and gzip). The lockfile
-pins dependencies; lifecycle scripts are disabled; the build uses an empty
-temporary HOME/npm config, not the checkout's `node_modules`.
+This preview ships source. Build the local archive with `npm run build:desktop`
+(npm registry access, GNU tar and gzip). The lockfile pins dependencies;
+lifecycle scripts are disabled; the build uses an empty temporary HOME/npm
+config, not the checkout's `node_modules`.
 
 ```sh
 sha256sum -c guey-0.2.0-linux-x64.tar.gz.sha256
