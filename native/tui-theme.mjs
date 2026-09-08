@@ -2,9 +2,10 @@ import { readFile } from 'node:fs/promises';
 import { homedir } from 'node:os';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { PI_THEME_DIR } from './pi-sdk.mjs';
 
 const here = dirname(fileURLToPath(import.meta.url));
-const builtin = join(here, '../node_modules/@earendil-works/pi-coding-agent/dist/modes/interactive/theme');
+const builtin = PI_THEME_DIR;
 const packaged = join(here, '../themes');
 
 function ansi256(n) {

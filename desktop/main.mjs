@@ -99,7 +99,7 @@ async function serve(cwd) {
   process.env.PI_SKIP_VERSION_CHECK = '1';
   process.env.PI_TELEMETRY = '0';
   const { createGueyServer } = await import('../server.mjs');
-  const { SettingsManager, ModelRuntime } = await import('@earendil-works/pi-coding-agent');
+  const { SettingsManager, ModelRuntime } = await import('../native/pi-sdk.mjs');
   const settingsManager = SettingsManager.create(agentDir, agentDir);
   const modelRuntime = await ModelRuntime.create({
     authPath: join(userAgent, 'auth.json'),

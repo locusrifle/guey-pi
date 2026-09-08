@@ -5,7 +5,7 @@ import { join } from 'node:path';
 import { tmpdir } from 'node:os';
 import { EventEmitter } from 'node:events';
 import { WebSocket } from 'ws';
-import { SessionManager } from '@earendil-works/pi-coding-agent';
+import { SessionManager } from '../pi-sdk.mjs';
 import { createGueyServer } from '../../server.mjs';
 import { createRuntime } from '../runtime.mjs';
 import { resolveProduct } from '../product.mjs';

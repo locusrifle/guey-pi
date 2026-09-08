@@ -17,7 +17,7 @@ Environment: x86-64 Linux, Node.js 26.7.0, 24.19.0 and 22.19.0, Pi SDK 0.85.0, r
 - Source-pattern scan found no matching live credential formats or developer home/tailnet addresses in the release payload. This is a review, not a guarantee that automated scanning finds every possible secret.
 - Omitted old Git history, recordings/state, personal operations skill and personal theme registration. Removed the keyboard sound with unknown redistribution provenance. Added upstream font and browser-library license notices.
 
-- `npm run build:desktop` then `npm run test:desktop`: **2 passed, 0 skipped**, including Chromium against the extracted archive. The archive includes `LICENSE`, `THIRD_PARTY_NOTICES.md` and `licenses/`. Checksum: `da09a00ac5cb4b5b08098fc9f40beeb116d9ea5bc2c96647900ffe40947e0bb2  guey-0.2.0-linux-x64.tar.gz`.
+- `npm run build:desktop` then `npm run test:desktop`: **2 passed, 0 skipped**, including Chromium against the extracted archive. Other-OS esbuild binaries and Pi docs/examples are pruned; unused html2canvas npm packages are not installed. Archive ~52 MB (was ~156 MB).
 
 Remote CI is recorded after the first public push. Source tests alone were not treated as artifact verification.
 

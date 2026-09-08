@@ -4,12 +4,14 @@ import { mkdtemp, mkdir, readFile, rm, stat } from 'node:fs/promises';
 import { existsSync } from 'node:fs';
 import { join } from 'node:path';
 import { tmpdir } from 'node:os';
+import { pathToFileURL } from 'node:url';
 import { chromium } from 'playwright';
-import { ModelRuntime, SettingsManager } from '@earendil-works/pi-coding-agent';
-import { createProvider } from '@earendil-works/pi-ai';
+import { ModelRuntime, SettingsManager, PI_ROOT } from '../pi-sdk.mjs';
 import { createRuntime } from '../runtime.mjs';
 import { createGueyServer } from '../../server.mjs';
 import { createAuth } from '../auth.mjs';
+
+const { createProvider } = await import(pathToFileURL(join(PI_ROOT, 'node_modules/@earendil-works/pi-ai/dist/index.js')).href);
 
 const wait = async predicate => {
   for (let i = 0; i < 200; i++) { if (await predicate()) return; await new Promise(r => setTimeout(r, 10)); }

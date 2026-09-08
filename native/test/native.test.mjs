@@ -7,7 +7,7 @@ import { tmpdir } from 'node:os';
 import { once, EventEmitter } from 'node:events';
 import { createServer as createNetServer } from 'node:net';
 import { WebSocket } from 'ws';
-import { SessionManager } from '@earendil-works/pi-coding-agent';
+import { SessionManager } from '../pi-sdk.mjs';
 import { createRuntime } from '../runtime.mjs';
 import { createExtensionUI } from '../extension-ui.mjs';
 import { createGueyServer, privateHost } from '../../server.mjs';

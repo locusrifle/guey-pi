@@ -12,9 +12,9 @@ runs the stock one.
 ## Requirements
 
 Linux, Node.js **22.19 or newer**, bash, util-linux (`flock`), and a modern
-browser. `xdg-open` is used when present. The archive includes production npm
-dependencies, not Node or a browser. Native addons need compatible
-libc/system libraries. This is not an AppImage, Flatpak, sandbox, or universal
+browser. `xdg-open` is used when present. The archive includes the Pi Node SDK
+with other-OS binaries removed, not Node or a browser. A compiled `pi` CLI is
+not required to start. This is not an AppImage, Flatpak, sandbox, or universal
 Linux binary.
 
 ## Download, run and install

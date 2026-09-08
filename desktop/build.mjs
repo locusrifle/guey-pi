@@ -34,7 +34,8 @@ try {
     cwd: stage, stdio: 'inherit',
     env: { PATH: process.env.PATH, HOME: home, npm_config_engine_strict: 'true', npm_config_cache: join(temp, 'cache'), npm_config_userconfig: '/dev/null', npm_config_globalconfig: join(home, 'global-npmrc') },
   });
-  await writeFile(join(stage, 'DESKTOP-BUNDLE'), `${name}\nPi SDK ${pkg.dependencies['@earendil-works/pi-coding-agent']}\nNode runtime not bundled; requires >=22.19\n`);
+  execFileSync(process.execPath, [join(root, 'scripts/prune-sdk.mjs'), stage], { stdio: 'inherit' });
+  await writeFile(join(stage, 'DESKTOP-BUNDLE'), `${name}\nPi SDK ${pkg.dependencies['@earendil-works/pi-coding-agent']} (other-OS binaries pruned)\nNode runtime not bundled; requires >=22.19\n`);
   // Record every payload byte, including third-party licenses, without host paths.
   const hashes = [];
   async function walk(dir, prefix = '') {

@@ -22,7 +22,7 @@ Guey puts conversations, streaming tool output, models, sessions and provider si
 
 ## Getting started
 
-You need **Linux**, **Node.js 22.19+**, npm, bash, `flock` (util-linux), and a modern browser. No separate Pi CLI installation is needed for the GUI.
+You need **Linux**, **Node.js 22.19+**, npm, bash, `flock` (util-linux), and a modern browser. `npm ci` installs the Pi **Node SDK** (0.85.x). A compiled `pi` binary on PATH is not enough by itself — Guey imports the library, it does not shell out to the CLI.
 
 ```sh
 git clone https://github.com/locusrifle/guey-pi.git

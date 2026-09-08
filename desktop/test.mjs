@@ -7,7 +7,7 @@ import { promisify } from 'node:util';
 import { execFile } from 'node:child_process';
 import { once } from 'node:events';
 import { WebSocket } from 'ws';
-import { SessionManager } from '@earendil-works/pi-coding-agent';
+import { SessionManager } from '../native/pi-sdk.mjs';
 import { chromium } from 'playwright';
 import { existsSync } from 'node:fs';
 const exec = promisify(execFile);
@@ -45,6 +45,9 @@ test('extracted desktop artifact: isolated SDK, lifecycle, failure paths and use
     await exec('tar', ['-xzf', join(root, 'dist', bundleName + '.tar.gz'), '-C', dir]);
     await exec('sha256sum', ['-c', 'SHA256SUMS'], { cwd: bundle, maxBuffer: 8 * 1024 * 1024 });
     for (const omitted of ['skills', 'extensions', 'records', '.git', 'native/test', 'node_modules/playwright']) await assert.rejects(access(join(bundle, omitted)));
+    await access(join(bundle, 'node_modules/@earendil-works/pi-coding-agent'));
+    await assert.rejects(access(join(bundle, 'node_modules/@esbuild/win32-x64')));
+    await assert.rejects(access(join(bundle, 'node_modules/@earendil-works/pi-coding-agent/docs')));
     assert.equal(JSON.parse(await readFile(join(bundle, 'package.json'), 'utf8')).pi, undefined);
     await access(join(bundle, 'LICENSE'));
     const nativeMjs = async name => (await readdir(join(name, 'native'))).filter(n => n.endsWith('.mjs')).sort();

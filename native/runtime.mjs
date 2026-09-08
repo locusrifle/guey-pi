@@ -5,7 +5,7 @@ import { readdir } from 'node:fs/promises';
 import {
   createAgentSessionRuntime, createAgentSessionServices, createAgentSessionFromServices,
   SessionManager, getAgentDir,
-} from '@earendil-works/pi-coding-agent';
+} from './pi-sdk.mjs';
 import { createExtensionUI } from './extension-ui.mjs';
 import { listLiveSessions, liveOwnsSession, publicLiveSession } from './live-sessions.mjs';
 import { connectLive } from './live-client.mjs';

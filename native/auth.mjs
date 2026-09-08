@@ -1,5 +1,5 @@
 import { randomUUID } from 'node:crypto';
-import { CredentialSynchronizationError } from '@earendil-works/pi-coding-agent';
+import { CredentialSynchronizationError } from './pi-sdk.mjs';
 
 // Only UI/lifecycle adaptation. Pi owns provider flows, callbacks, token exchange,
 // credential persistence, refresh and availability. No credentials enter snapshots.

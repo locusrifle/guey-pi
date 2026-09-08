@@ -5,7 +5,7 @@ import { join, resolve, sep, extname } from 'node:path';
 import { homedir } from 'node:os';
 import { pathToFileURL } from 'node:url';
 import { WebSocketServer } from 'ws';
-import { getAgentDir } from '@earendil-works/pi-coding-agent';
+import { getAgentDir } from './native/pi-sdk.mjs';
 import { createRuntime } from './native/runtime.mjs';
 import { transcribeAudio } from './native/transcribe.mjs';
 import { CONTROLS } from './native/controls.mjs';

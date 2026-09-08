@@ -9,7 +9,7 @@ Browser ── HTTP / WebSocket ── Guey server ── Pi SDK runtime
 Terminal Pi + guey-live ── private Unix socket ── watch bridge
 ```
 
-Guey is a native browser renderer around the stock Pi SDK. There is no terminal emulator. Pi owns model communication, the agent loop, tools, compaction, persistence and extension behavior. Guey adapts snapshots, commands and supported extension interactions into browser UI.
+Guey is a native browser renderer around the stock Pi SDK. There is no terminal emulator. It imports `@earendil-works/pi-coding-agent` as a library. A compiled `pi` binary does not export that library, so the npm package is the runtime. Pi owns model communication, the agent loop, tools, compaction, persistence and extension behavior. Guey adapts snapshots, commands and supported extension interactions into browser UI.
 
 | Component | Responsibility |
 | --- | --- |

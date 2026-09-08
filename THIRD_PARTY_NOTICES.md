@@ -19,6 +19,6 @@ The original personal keyboard sound is excluded because redistribution provenan
 
 ## Installed dependencies
 
-`package-lock.json` records the resolved dependency graph. The desktop archive includes production dependencies and their accompanying license files, plus source checksums. Notable dependencies include the Pi SDK (`@earendil-works/pi-coding-agent`, MIT), `@earendil-works/pi-server` (MIT) and `ws` (MIT). Playwright (Apache-2.0) is a development dependency and is not included in the desktop runtime archive.
+`package-lock.json` records the resolved dependency graph. Runtime dependencies are the Pi SDK (`@earendil-works/pi-coding-agent`, MIT), `@earendil-works/pi-server` (MIT, pulled by the SDK barrel), and `ws` (MIT). The html2canvas npm packages are not installed; the browser uses the vendored ESM files. Playwright (Apache-2.0) is a development dependency and is not included in the desktop runtime archive.
 
 Consult each package's notices for transitive dependencies. Browser binaries, Node.js and model weights are not bundled. Pi and provider names identify interoperability, not affiliation or endorsement.
