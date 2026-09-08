@@ -47,7 +47,9 @@ test('extracted desktop artifact: isolated SDK, lifecycle, failure paths and use
     for (const omitted of ['skills', 'extensions', 'records', '.git', 'native/test', 'node_modules/playwright']) await assert.rejects(access(join(bundle, omitted)));
     await access(join(bundle, 'node_modules/@earendil-works/pi-coding-agent'));
     await assert.rejects(access(join(bundle, 'node_modules/@esbuild/win32-x64')));
+    if (process.arch !== 'arm64') await assert.rejects(access(join(bundle, 'node_modules/@esbuild/linux-arm64')));
     await assert.rejects(access(join(bundle, 'node_modules/@earendil-works/pi-coding-agent/docs')));
+    await assert.rejects(access(join(bundle, 'native/public/js/html2canvas.esm.js')));
     assert.equal(JSON.parse(await readFile(join(bundle, 'package.json'), 'utf8')).pi, undefined);
     await access(join(bundle, 'LICENSE'));
     const nativeMjs = async name => (await readdir(join(name, 'native'))).filter(n => n.endsWith('.mjs')).sort();

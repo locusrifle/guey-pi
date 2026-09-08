@@ -8,7 +8,6 @@ Guey is MIT licensed. Third-party components keep their own licenses; MIT does n
 | --- | --- | --- |
 | Commit Mono | `native/public/fonts/CommitMono-400-Regular.otf` | MIT, © 2023 Eigil Nikolajsen. [License](licenses/CommitMono-MIT.txt), [upstream](https://github.com/eigilnikolajsen/commit-mono). |
 | Departure Mono | `native/public/fonts/DepartureMono-Regular.woff2` | MIT, © 2024 Helena Zhang & Tobias Fried. [License](licenses/DepartureMono-MIT.txt), [upstream](https://github.com/rektdeckard/departure-mono). |
-| html2canvas 1.4.1 | `native/public/js/html2canvas.esm.js` | MIT. [License](licenses/html2canvas-MIT.txt), [upstream](https://github.com/niklasvh/html2canvas). |
 | html2canvas-pro | `native/public/js/html2canvas-pro.esm.js` | MIT. [License](licenses/html2canvas-pro-MIT.txt), [upstream](https://github.com/yorickshan/html2canvas-pro). |
 | noVNC 1.7.0 | `native/public/vendor/novnc/` | Primarily MPL-2.0; individual files have their own notices. [License inventory](native/public/vendor/novnc/LICENSE.txt), [authors](native/public/vendor/novnc/AUTHORS), [upstream source](https://github.com/novnc/noVNC). |
 | pako (noVNC vendor copy) | `native/public/vendor/novnc/vendor/pako/` | MIT/Zlib; [license](native/public/vendor/novnc/vendor/pako/LICENSE). |
