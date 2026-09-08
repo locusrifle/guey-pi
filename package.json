@@ -1,0 +1,40 @@
+{
+  "name": "guey-pi",
+  "version": "0.2.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "start": "./desktop/guey start",
+    "start:server": "node server.mjs",
+    "start:desktop": "./desktop/guey start",
+    "build:desktop": "node desktop/build.mjs",
+    "test:desktop": "node --test desktop/test.mjs",
+    "test:auth": "node --test native/test/auth.test.mjs",
+    "test": "node --test native/test/native.test.mjs native/test/live.test.mjs native/test/desktop.test.mjs native/test/desk.test.mjs native/test/push.test.mjs native/test/product.test.mjs test/*.test.mjs",
+    "test:browser": "node --test native/test/browser.test.mjs",
+    "test:all": "node --test native/test/*.test.mjs test/*.test.mjs"
+  },
+  "dependencies": {
+    "@earendil-works/pi-coding-agent": "0.85.0",
+    "@earendil-works/pi-server": "0.85.0",
+    "html2canvas": "^1.4.1",
+    "html2canvas-pro": "^2.4.1",
+    "ws": "8.21.3"
+  },
+  "pi": {
+    "extensions": [
+      "./extensions/guey-live"
+    ]
+  },
+  "devDependencies": {
+    "playwright": "1.63.0"
+  },
+  "description": "Pi, in your browser. A native web GUI built on the Pi coding agent SDK.",
+  "engines": { "node": ">=22.19.0" },
+  "license": "MIT",
+  "author": "Noah Fleming",
+  "repository": { "type": "git", "url": "git+https://github.com/locusrifle/guey-pi.git" },
+  "bugs": { "url": "https://github.com/locusrifle/guey-pi/issues" },
+  "homepage": "https://github.com/locusrifle/guey-pi#readme",
+  "keywords": ["pi", "coding-agent", "gui", "web-interface"]
+}

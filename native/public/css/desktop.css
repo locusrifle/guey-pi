@@ -1,0 +1,60 @@
+/* Blue Guey skin. Keyboard chrome stays in locusrifle.css / grid-keys. */
+html.guey-desktop body,
+body.guey-desktop {
+  --desk-canvas: #ebe7e4; --desk-panel: #f3f2f0; --desk-soft: #eef1f3;
+  --desk-text: #252f3d; --desk-muted: #5c5752; --desk-accent: #4b607c; --desk-line: #8b847d59;
+  --pi-bg: var(--desk-panel); --pi-bg-raised: var(--desk-soft);
+  --pi-text: var(--desk-text); --pi-text-bright: var(--desk-text); --pi-muted: var(--desk-muted);
+  --pi-accent: var(--desk-accent); --pi-rule: var(--desk-line); --pi-cursor: var(--desk-accent);
+  --pi-dim: var(--desk-line); --pi-user: var(--desk-soft); --pi-tool: var(--desk-soft);
+  --pi-tool-ok: var(--desk-soft); --pi-tool-error: #844f3b18; --pi-error: #844f3b;
+  --pi-working: var(--desk-accent); --paper: var(--desk-canvas); --rule-minor: #252f3d08;
+  --orange: var(--desk-accent);
+  background: var(--desk-canvas); color: var(--desk-text);
+}
+@media (prefers-color-scheme: dark) {
+  html.guey-desktop body,
+  body.guey-desktop {
+    color-scheme: dark;
+    --desk-canvas: #161d27; --desk-panel: #212730; --desk-soft: #252f3d;
+    --desk-text: #ebe7e4; --desk-muted: #9fa4ab; --desk-accent: #6a9fcc; --desk-line: #49505980;
+    --pi-error: #e8704f; --rule-minor: #d5d8db08;
+  }
+}
+.guey-desktop::before {
+  background-image: linear-gradient(var(--rule-minor) 1px, transparent 1px), linear-gradient(90deg, var(--rule-minor) 1px, transparent 1px);
+}
+.guey-desktop #harness-reach,
+.guey-desktop .drop-handle { display: none !important; }
+.guey-desktop #terminal-entry,
+.guey-desktop #terminal-entry.open { pointer-events: auto; }
+.guey-desktop #entry-terminal,
+.guey-desktop #terminal-entry.harness #entry-terminal,
+.guey-desktop #terminal-entry.open #entry-terminal {
+  transform: none; opacity: 1; top: 0; height: 100dvh; max-height: 100dvh;
+  box-shadow: none; border: 0; background: var(--desk-panel);
+}
+@media (pointer: coarse), (max-width: 700px) {
+  html.guey-desktop #entry-terminal,
+  html.guey-desktop #terminal-entry.harness #entry-terminal,
+  html.guey-desktop #terminal-entry.open #entry-terminal {
+    height: var(--entry-terminal-height, 100dvh);
+    max-height: calc(100dvh - env(safe-area-inset-bottom, 0px));
+  }
+}
+.guey-desktop #entry-pi-label {
+  background: transparent; color: var(--desk-accent);
+  border: 1px solid var(--desk-line); border-radius: 0; padding: 3px 8px;
+}
+.guey-desktop #entry-input { color: var(--desk-text); }
+.guey-desktop #entry-input-zone,
+.guey-desktop .entry-status { border-color: var(--desk-line); }
+.guey-desktop #grid-keys {
+  background: var(--desk-panel);
+  color: var(--desk-text);
+  box-shadow: inset 0 0 0 1px var(--desk-accent);
+}
+.guey-desktop #grid-keys button {
+  border-color: var(--desk-accent);
+  color: var(--desk-text);
+}

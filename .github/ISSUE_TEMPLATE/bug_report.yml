@@ -1,0 +1,30 @@
+name: Bug report
+description: Something observable does not work.
+body:
+  - type: markdown
+    attributes:
+      value: "Do not include credentials, private transcripts or sensitive screenshots. See SECURITY.md for vulnerability reporting."
+  - type: textarea
+    id: environment
+    attributes:
+      label: Environment
+      description: Guey commit/version, OS, Node version, browser, stock or personal composition.
+    validations:
+      required: true
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Reproduction
+      description: Minimal steps using synthetic data.
+    validations:
+      required: true
+  - type: textarea
+    id: behavior
+    attributes:
+      label: Expected and actual behavior
+    validations:
+      required: true
+  - type: textarea
+    id: logs
+    attributes:
+      label: Redacted logs or screenshots

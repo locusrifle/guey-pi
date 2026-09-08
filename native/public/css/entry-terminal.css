@@ -1,0 +1,870 @@
+@font-face {
+  font-family: "Commit Mono";
+  src: url("/fonts/CommitMono-400-Regular.otf") format("opentype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: block;
+}
+@font-face {
+  font-family: "Departure Mono";
+  src: url("/fonts/DepartureMono-Regular.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: block;
+}
+
+#entry-gate {
+  position: fixed;
+  inset: 0;
+  z-index: 20;
+  background: transparent;
+  pointer-events: none;
+}
+#entry-gate.gone {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+#keybind-popdown {
+  --keybind-unit: var(--locus-grid-major, 24px);
+  --keybind-line: 12px;
+  --keybind-space: calc(var(--keybind-unit) * 1.75 - var(--keybind-line) * 0.75);
+  appearance: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 40;
+  box-sizing: border-box;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  grid-template-rows: repeat(3, var(--keybind-line));
+  justify-content: stretch;
+  align-content: start;
+  column-gap: calc(var(--keybind-unit) * 1.5);
+  row-gap: var(--keybind-space);
+  width: 100vw;
+  height: calc(var(--keybind-unit) * 7);
+  margin: 0;
+  padding: var(--keybind-space) 0;
+  overflow: hidden;
+  pointer-events: none;
+  border: 0;
+  border-radius: 0;
+  background: var(--pi-bg);
+  color: var(--pi-text);
+  box-shadow: inset 0 -1px 0 var(--pi-accent);
+  font-family: "Departure Mono", "Commit Mono", ui-monospace, monospace;
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 1;
+  letter-spacing: 0;
+  text-align: left;
+  text-transform: uppercase;
+  cursor: default;
+  transform: translateY(-100%);
+  transition: transform 140ms linear, height 140ms linear, opacity 140ms linear, background-color 140ms linear;
+}
+#keybind-popdown.shown {
+  transform: translateY(0);
+}
+#keybind-popdown.morph {
+  height: var(--entry-terminal-height, 40dvh);
+  background: transparent;
+  pointer-events: none;
+  transform: translateY(0);
+}
+#keybind-popdown.morph .keybind-row { opacity: 0; }
+#keybind-popdown.spent {
+  pointer-events: none;
+  transform: translateY(-100%);
+  transition: none;
+}
+#keybind-popdown .keybind-row {
+  display: grid;
+  grid-template-columns: subgrid;
+  grid-column: 1 / -1;
+  align-items: center;
+  min-height: 0;
+  transition: opacity 140ms linear;
+}
+#keybind-popdown .key { justify-self: end; text-align: right; }
+#keybind-popdown .act { position: relative; justify-self: start; text-align: left; }
+/* The row heights are the grid's, so the note hangs into the gap below its row
+   rather than growing the row and pushing the other two bindings off the beat. */
+#keybind-popdown .act-note {
+  position: absolute;
+  top: calc(100% + 5px);
+  left: 0;
+  font-size: 10px;
+  line-height: 1;
+  white-space: nowrap;
+  opacity: 0.5;
+}
+#keybind-popdown .sep {
+  display: grid;
+  place-items: center;
+  justify-self: center;
+  width: 1em;
+  opacity: 1;
+  font-size: 12px;
+  line-height: 1;
+}
+#keybind-popdown[hidden] { display: none; }
+#grid-keys {
+  position: fixed;
+  z-index: 200;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: row;
+  overflow: visible;
+  pointer-events: auto;
+  background: var(--pi-bg);
+  color: var(--pi-text);
+  box-shadow: inset 0 0 0 1px var(--pi-accent);
+  font-family: "Departure Mono", "Commit Mono", ui-monospace, monospace;
+  text-transform: uppercase;
+  touch-action: none;
+  transform: translateX(0);
+  transition: transform 140ms linear;
+}
+#grid-keys.dragging { transition: none; }
+#grid-keys[hidden] { display: none; }
+#grid-keys.stowed { box-shadow: none; }
+#grid-keys.stowed .keys-sheet { pointer-events: none; }
+#grid-keys .keys-rail {
+  position: relative;
+  flex: 0 0 var(--key-rail, 6px);
+  width: var(--key-rail, 6px);
+  background: var(--pi-accent);
+  touch-action: none;
+}
+#grid-keys.stowed .keys-rail::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  width: calc(var(--locus-grid-major, 24px) * 2);
+}
+#grid-keys .keys-sheet {
+  position: relative;
+  flex: 1;
+  min-width: 0;
+}
+#grid-keys .keys-face {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+}
+#grid-keys .keys-face[hidden] { display: none; }
+#grid-keys .keys-row {
+  display: flex;
+  flex: 1;
+  min-height: 0;
+  justify-content: center;
+}
+#grid-keys button {
+  box-sizing: border-box;
+  flex: 1;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  border: 1px solid var(--pi-accent);
+  border-radius: 0;
+  background: transparent;
+  color: var(--pi-text-bright);
+  font-family: inherit;
+  font-size: 14px;
+  line-height: 1;
+  text-transform: uppercase;
+  touch-action: manipulation;
+}
+#grid-keys .keys-space { flex: 3; }
+#grid-keys button.armed,
+#grid-keys button.held {
+  background: var(--pi-accent);
+  color: var(--pi-cursor);
+}
+#grid-keys .keys-flip {
+  position: relative;
+}
+#grid-keys .keys-flip i {
+  position: absolute;
+  width: 38%;
+  height: 38%;
+  box-sizing: border-box;
+  border: 1px solid var(--pi-accent);
+  background: var(--pi-bg);
+}
+#grid-keys .keys-flip i:first-child {
+  top: 40%;
+  left: 40%;
+  z-index: 0;
+}
+#grid-keys .keys-flip i:last-child {
+  top: 22%;
+  left: 22%;
+  z-index: 1;
+  background: var(--pi-accent);
+}
+#grid-keys[data-page="other"] .keys-flip i:first-child,
+#grid-keys.page-other .keys-flip i:first-child {
+  z-index: 2;
+}
+#grid-keys[data-page="other"] .keys-flip i:last-child,
+#grid-keys.page-other .keys-flip i:last-child {
+  z-index: 0;
+}
+
+#terminal-entry {
+  position: fixed;
+  inset: 0;
+  z-index: 12;
+  overflow: hidden;
+  pointer-events: none;
+}
+#terminal-entry[hidden] { display: none; }
+#entry-terminal {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: min(var(--entry-terminal-height, 40dvh), 100dvh);
+  max-height: 100dvh;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  pointer-events: auto;
+  color: var(--pi-text);
+  background: var(--pi-bg);
+  border: 0;
+  box-shadow: 0 16px 40px var(--pi-bg)44;
+  transform: translateY(-100%);
+  opacity: 1;
+  transition: transform 140ms linear, opacity 140ms linear;
+}
+#terminal-entry.open {
+  z-index: 100;
+  pointer-events: none;
+}
+#terminal-entry.open #entry-terminal {
+  transform: translateY(0);
+}
+#terminal-entry.morphing #entry-terminal {
+  transform: translateY(0);
+  opacity: 0;
+}
+#terminal-entry.open.morphing #entry-terminal {
+  opacity: 1;
+}
+#entry-terminal.dragging {
+  cursor: ns-resize;
+  user-select: none;
+  transition: none;
+}
+.drop-handle {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 12px;
+  z-index: 4;
+  cursor: ns-resize;
+  touch-action: none;
+}
+.drop-handle::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 1px;
+  background: var(--pi-accent);
+}
+.drop-handle:hover::after,
+#entry-terminal.dragging .drop-handle::after {
+  height: 4px;
+}
+.entry-screen {
+  position: relative;
+  min-height: 0;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  color: var(--pi-text);
+  background: var(--pi-bg);
+  --entry-text-size: clamp(0.68rem, 0.95vw, 1rem);
+  font-family: var(--font-pi, "JetBrainsMono Nerd Font", ui-monospace, monospace);
+  font-size: var(--entry-text-size);
+  line-height: 1.42;
+}
+#entry-output {
+  --entry-gutter: var(--locus-grid-major, 24px);
+  min-height: 0;
+  flex: 1;
+  padding: var(--entry-gutter) var(--entry-gutter) 0;
+  overflow: auto;
+  scrollbar-width: none;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  user-select: text;
+  -webkit-user-select: text;
+}
+#entry-output::after {
+  content: "";
+  display: block;
+  height: 4px;
+}
+#entry-output::-webkit-scrollbar { display: none; }
+.entry-line { display: block; max-width: none; margin: 0 0 1em; }
+.entry-line.user {
+  width: auto;
+  max-width: none;
+  margin: 0 calc(-1 * var(--entry-gutter, 24px)) 1.15em;
+  padding: 0.9em var(--entry-gutter, 24px);
+  color: var(--pi-text-bright);
+  background: var(--pi-user);
+}
+.entry-line.assistant { color: var(--pi-text); margin: 0.85em 0 1.25em; }
+.entry-line.thinking {
+  color: var(--pi-muted);
+  font-style: italic;
+  white-space: pre-wrap;
+}
+.entry-line.assistant code, .entry-line.thinking code {
+  font: inherit;
+  color: var(--pi-text-bright);
+}
+.entry-line.assistant strong { font-weight: 700; color: var(--pi-text-bright); }
+.entry-thinking {
+  display: flex;
+  align-items: center;
+  gap: 0.7em;
+  margin: 0.85em 0 1.15em;
+  color: var(--pi-muted);
+  font-style: italic;
+}
+.entry-spinner {
+  display: inline-block;
+  width: 1.15em;
+  flex: 0 0 1.15em;
+  color: var(--pi-accent);
+  font-style: normal;
+  font-variant-ligatures: none;
+  line-height: 1;
+}
+.entry-tool {
+  width: auto;
+  max-width: none;
+  margin: 0 0 1.15em;
+  padding: 0.9em 1em;
+  border: 1px solid var(--pi-accent);
+  background: color-mix(in srgb, var(--pi-accent) 7%, var(--pi-tool));
+  box-sizing: border-box;
+}
+.entry-tool.ok { background: var(--pi-tool-ok); }
+.entry-tool.question.ok { background: color-mix(in srgb, var(--pi-accent) 12%, var(--pi-tool)); }
+.entry-tool.error { background: var(--pi-tool-error); }
+.entry-tool-title {
+  display: flex;
+  align-items: center;
+  gap: 0.6em;
+  color: var(--pi-text);
+  font-weight: 600;
+  font-style: normal;
+}
+.entry-tool-output {
+  margin: 0.65em 0 0;
+  color: var(--pi-working);
+  font-weight: 400;
+  white-space: pre-wrap;
+}
+.entry-tool.question .entry-tool-title { gap: 0.7ch; font-weight: 400; }
+.entry-tool.question .entry-tool-title strong { color: var(--pi-text); }
+.entry-tool.question .entry-tool-title span,
+.entry-tool-summary { color: var(--pi-text); }
+.entry-tool-summary { margin-left: 2ch; }
+.entry-tool-answer { color: var(--pi-accent); margin-top: 0.15em; }
+.entry-tool.error .entry-tool-output { color: var(--pi-error); }
+/* The list lives inside the input's own frame, as Pi's TUI draws it: the prompt line on top, the
+   options under it, one box. The frame already pads the sides, so this adds only the vertical room. */
+#slash-menu {
+  flex: none;
+  margin: 0;
+  padding: 0;
+  max-height: calc(5 * 1.42em);
+  overflow: hidden;
+  scrollbar-width: none;
+  background: var(--pi-bg);
+}
+#slash-menu::-webkit-scrollbar { display: none; width: 0; height: 0; }
+#slash-menu[hidden] { display: none; }
+.slash-item {
+  appearance: none;
+  -webkit-appearance: none;
+  display: grid;
+  grid-template-columns: 2ch minmax(12ch, 22ch) 1fr;
+  column-gap: 1em;
+  align-items: baseline;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+  line-height: 1.42em;
+  font: inherit;
+  text-align: left;
+  color: var(--pi-text-bright);
+  cursor: pointer;
+}
+.slash-count {
+  color: var(--pi-muted);
+  margin-top: 0.15em;
+}
+.slash-marker { color: var(--pi-accent); width: 2ch; }
+.slash-name { color: var(--pi-text-bright); }
+.slash-desc { color: var(--pi-muted); min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.slash-item.active {
+  background: transparent;
+  color: var(--pi-accent);
+}
+.slash-item.active .slash-name,
+.slash-item.active .slash-desc { color: var(--pi-accent); }
+/* A picker's title and key hint are labels, not choices: they span the row and cannot be picked. */
+.slash-item.caption {
+  grid-template-columns: 1fr;
+  color: var(--pi-muted);
+  cursor: default;
+}
+.entry-line.skill { color: var(--pi-accent); }
+.entry-line.notice { color: var(--pi-error); white-space: pre-wrap; }
+.entry-line.system { color: var(--pi-muted); white-space: pre-wrap; }
+#entry-input-zone {
+  position: relative;
+  box-sizing: border-box;
+  flex: 0 0 auto;
+  min-height: calc(var(--locus-grid-major, 24px) * 2);
+  margin: 0;
+  padding: 0 var(--locus-grid-major, 24px);
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  /* The box is two rows tall but the prompt is one: centred it sits where it always sat, and the
+     options list grows downward from it rather than shoving it off the top. */
+  justify-content: center;
+  column-gap: 0;
+  border-top: 1px solid var(--pi-accent);
+  border-bottom: 0;
+}
+/* With a question up, the question owns the rule and the prompt joins it underneath. */
+.entry-screen:has(#entry-dialog:not([hidden])) #entry-input-zone { border-top: 0; }
+/* A question that is being answered from its own list has nothing to type: the prompt and its
+   cursor are taken off the screen entirely rather than blinking at somebody who is meant to be
+   pressing a number. */
+.entry-screen:has(#entry-dialog:not([hidden]):not(.writing)) #entry-input-zone:not(:has(#entry-dialog)) { display: none; }
+/* The stock shell nests pickers in the input zone: hide the composer, not
+   the ancestor that contains the question itself. */
+#entry-input-zone:has(#entry-dialog:not([hidden]):not(.writing)) .entry-prompt { display: none; }
+/* Once "Type something." is taken the field comes back, and it comes back contained: one orange
+   rule above the cursor, so what you are typing into reads as its own bar and not as loose text
+   under the list. */
+.entry-screen:has(#entry-dialog.writing) #entry-input-zone { border-top: 1px solid var(--pi-accent); }
+.entry-input-stack {
+  position: relative;
+  flex: 0 0 auto;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  height: var(--locus-grid-major, 24px);
+}
+#entry-input-zone[hidden] { display: none; }
+.entry-prompt {
+  display: flex;
+  align-items: center;
+  height: var(--locus-grid-major, 24px);
+  line-height: var(--locus-grid-major, 24px);
+  color: var(--pi-accent);
+}
+#entry-input {
+  min-width: 0;
+  width: 100%;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  color: var(--pi-text-bright);
+  font: inherit;
+  caret-color: var(--pi-cursor);
+  caret-shape: block;
+  padding: 0;
+  margin: 0;
+  resize: none;
+  overflow: hidden;
+  white-space: pre-wrap;
+  word-break: break-word;
+  line-height: var(--locus-grid-major, 24px);
+  height: var(--locus-grid-major, 24px);
+  min-height: var(--locus-grid-major, 24px);
+  user-select: text;
+  -webkit-user-select: text;
+}
+#entry-input:disabled { opacity: 0.55; }
+.entry-dialog-option.unavailable .entry-dialog-option-label { opacity: 0.5; text-decoration: line-through; }
+.entry-dialog-option.unavailable small { color: var(--pi-muted); }
+#entry-input.mobile-key-input {
+  color: transparent;
+  caret-color: transparent;
+  opacity: 0;
+}
+.mobile-input-display {
+  box-sizing: border-box;
+  position: absolute;
+  inset: 0;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  overflow: hidden;
+  color: var(--pi-text-bright);
+  font: inherit;
+  line-height: var(--locus-grid-major, 24px);
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  pointer-events: none;
+}
+.mobile-input-display[hidden] { display: none; }
+.mobile-block-cursor {
+  display: block;
+  flex: 0 0 auto;
+  width: 1ch;
+  height: 1em;
+  margin: 0;
+  background: var(--pi-cursor);
+  animation: mobile-cursor-blink 1s steps(1, end) infinite;
+}
+@keyframes mobile-cursor-blink {
+  0%, 49% { opacity: 1; }
+  50%, 100% { opacity: 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .mobile-block-cursor { animation: none; }
+}
+.entry-status {
+  box-sizing: content-box;
+  border-top: 1px solid var(--pi-accent);
+  flex: 0 0 auto;
+  height: auto;
+  min-height: 0;
+  padding: calc(var(--locus-grid-major, 24px) * 0.5) var(--locus-grid-major, 24px);
+  display: flex;
+  align-items: center;
+  color: var(--pi-muted);
+  line-height: 1;
+}
+.entry-status-line { display: flex; align-items: center; flex-wrap: wrap; gap: 1rem; width: 100%; white-space: nowrap; overflow: visible; }
+#entry-pi-label { flex: none; color: inherit; }
+#entry-input-zone.readonly #entry-input,
+#entry-input:disabled {
+  opacity: 0.55;
+  cursor: default;
+}
+#entry-dialog .entry-session-search {
+  box-sizing: border-box;
+  flex: none;
+  width: 100%;
+  margin: 0 0 8px;
+  padding: 4px 0;
+  color: inherit;
+  background: transparent;
+  border: 0;
+  border-bottom: 1px solid var(--pi-dim);
+  font: inherit;
+}
+#entry-dialog .entry-session-search:focus { outline: none; border-bottom-color: var(--pi-accent); }
+.entry-session-head {
+  display: flex;
+  align-items: baseline;
+  gap: 1rem;
+  margin: 0 0 6px;
+}
+.entry-session-head .entry-dialog-title { flex: 1; margin: 0; }
+.entry-session-count { color: var(--pi-muted); flex: none; }
+.entry-session-lists {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-x: hidden;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+}
+.entry-session-empty,
+.entry-session-hint { color: var(--pi-muted); margin: 0.35em 0; }
+.entry-resume-mode { margin: 0 0 6px; }
+#entry-source,
+#entry-session-name,
+#entry-cwd {
+  min-width: 0;
+  max-width: 100%;
+  overflow-wrap: anywhere;
+  text-transform: none;
+  letter-spacing: 0;
+  color: var(--pi-text);
+}
+#entry-source:empty,
+#entry-session-name:empty { display: none; }
+#entry-cwd { color: var(--pi-muted); }
+#entry-context { flex: none; margin-left: auto; }
+#entry-model-status { flex: none; }
+/* Spend sits to the left of the context meter, in the same row, because it is the same kind of
+   fact about the turn just taken. */
+#entry-model-status.working { color: var(--pi-working); }
+#terminal-entry.transforming { pointer-events: none; }
+#terminal-entry.gone { display: none; }
+
+/* The intro has no ground of its own. It is a transparent sheet holding the opening line, and the
+   ground behind it is the garden plane's drawn ruling -- the same one the tree stands on, at the
+   same unit and the same pan. A second grid painted here at a constant size was the reason the
+   landing and the tree looked like two different papers, and the reason the ruling appeared to
+   change under the visitor at the moment the tree arrived. */
+
+@media (max-width: 700px) {
+  .entry-screen { --entry-text-size: clamp(0.55rem, 2.2vw, 0.76rem); font-size: var(--entry-text-size); gap: 0; }
+  #entry-output { --entry-gutter: var(--locus-grid-major, 24px); }
+  .entry-status { padding: calc(var(--locus-grid-major, 24px) * 0.5) var(--locus-grid-major, 24px); }
+  .entry-status-line { gap: 0.5rem 0.8rem; white-space: normal; overflow: visible; }
+  .entry-status-line > span:first-child { overflow: visible; text-overflow: clip; }
+}
+html:has(body.pi-harness),
+body.pi-harness {
+  margin: 0;
+  min-height: 100dvh;
+  background-color: var(--garden);
+  background-image:
+    linear-gradient(var(--rule-fine) 0 1px, transparent 1px 4px),
+    linear-gradient(90deg, var(--rule-fine) 0 1px, transparent 1px 4px),
+    linear-gradient(var(--rule-minor) 0 1px, transparent 1px var(--locus-grid-major, 24px)),
+    linear-gradient(90deg, var(--rule-minor) 0 1px, transparent 1px var(--locus-grid-major, 24px)),
+    radial-gradient(circle at center, transparent 2px, var(--garden) 2px 100%),
+    linear-gradient(var(--rule-major) 0 1px, transparent 1px var(--locus-grid-major, 24px)),
+    linear-gradient(90deg, var(--rule-major) 0 1px, transparent 1px var(--locus-grid-major, 24px));
+  background-size:
+    4px 4px, 4px 4px,
+    var(--locus-grid-major, 24px) var(--locus-grid-major, 24px), var(--locus-grid-major, 24px) var(--locus-grid-major, 24px),
+    var(--locus-grid-major, 24px) var(--locus-grid-major, 24px), var(--locus-grid-major, 24px) var(--locus-grid-major, 24px), var(--locus-grid-major, 24px) var(--locus-grid-major, 24px);
+  background-position:
+    var(--locus-grid-origin-x, 0px) var(--locus-grid-origin-y, 0px),
+    var(--locus-grid-origin-x, 0px) var(--locus-grid-origin-y, 0px),
+    var(--locus-grid-origin-x, 0px) var(--locus-grid-origin-y, 0px),
+    var(--locus-grid-origin-x, 0px) var(--locus-grid-origin-y, 0px),
+    calc(var(--locus-grid-origin-x, 0px) - var(--locus-grid-major, 24px) * 0.5) calc(var(--locus-grid-origin-y, 0px) - var(--locus-grid-major, 24px) * 0.5),
+    var(--locus-grid-origin-x, 0px) var(--locus-grid-origin-y, 0px),
+    var(--locus-grid-origin-x, 0px) var(--locus-grid-origin-y, 0px);
+}
+#terminal-entry.harness #entry-terminal {
+  height: min(var(--entry-terminal-height, 40dvh), 100dvh);
+  max-height: 100dvh;
+}
+/* A question stands above the prompt rather than over it. It used to be laid across the input bar,
+   which is why it had to grow an input of its own -- a second field, in front of the real one, in
+   somebody else's font. In the column there is no need for one: the list is here, the prompt is
+   directly beneath it, and an answer nobody offered is typed where every other answer is typed. */
+#entry-dialog {
+  flex: 0 0 auto;
+  box-sizing: border-box;
+  max-height: 60%;
+  overflow-y: auto;
+  padding: 12px var(--locus-grid-major, 24px);
+  background: var(--pi-bg-raised);
+  /* One rule, and it belongs to whatever is at the top of the interactive block. */
+  border-top: 1px solid var(--pi-accent);
+  border-bottom: 0;
+  color: var(--pi-text);
+  font-family: "Commit Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: var(--entry-text-size, clamp(0.68rem, 0.95vw, 1rem));
+  font-weight: 400;
+  line-height: 1.42;
+}
+#entry-dialog[hidden] { display: none; }
+/* Session lists are long; they cannot live in 60% of a 40dvh drop. Fixed to the
+   viewport, with the drop allowed to paint outside itself for the duration. */
+#terminal-entry:has(#entry-dialog.session-picker:not([hidden])),
+#terminal-entry:has(#entry-dialog.session-picker:not([hidden])) #entry-terminal {
+  overflow: visible;
+}
+#terminal-entry:has(#entry-dialog.session-picker:not([hidden])) #entry-terminal {
+  transform: none;
+}
+#entry-dialog.session-picker {
+  position: fixed;
+  z-index: 5;
+  top: env(safe-area-inset-top, 0px);
+  left: env(safe-area-inset-left, 0px);
+  right: env(safe-area-inset-right, 0px);
+  width: auto;
+  height: min(72dvh, calc(100dvh - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px)));
+  max-height: min(72dvh, calc(100dvh - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px)));
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border: 1px solid var(--pi-accent);
+  box-shadow: 0 16px 40px var(--pi-bg)88;
+}
+.entry-dialog-title { margin-bottom: 10px; color: var(--pi-text); }
+#entry-dialog > p:empty { display: none; }
+#entry-dialog .entry-dialog-actions { display: flex; flex-direction: column; gap: 0; margin: 0; }
+#entry-dialog button {
+  appearance: none;
+  -webkit-appearance: none;
+  font: inherit;
+  color: inherit;
+  background: transparent;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+  padding: 2px 0;
+  text-align: left;
+  cursor: pointer;
+}
+#entry-dialog .entry-dialog-option { position: relative; display: flex; flex-direction: column; gap: 0; line-height: 1.3; padding: 3px 0; }
+#entry-dialog .entry-dialog-option.active { color: var(--pi-accent); }
+#entry-dialog .entry-dialog-option.active::before { content: ">"; position: absolute; left: -1.75ch; }
+#entry-dialog .entry-dialog-option-label {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.entry-dialog-option small {
+  margin-left: 0;
+  color: var(--pi-muted);
+  font: inherit;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+#entry-dialog .entry-dialog-option.active small { color: var(--pi-muted); }
+#entry-dialog .entry-dialog-option.current .entry-dialog-option-label { font-weight: 400; }
+#entry-dialog .entry-dialog-option-label { color: var(--pi-text-bright); }
+#entry-dialog .entry-dialog-option.active .entry-dialog-option-label { color: var(--pi-accent); }
+/* A number is a key to press, and everything that can be pressed here is orange. */
+.entry-option-index { display: inline-block; color: var(--pi-accent); font-style: normal; }
+#entry-dialog input, #entry-dialog textarea { box-sizing: border-box; width: 100%; color: inherit; background: var(--pi-bg); border: 1px solid var(--pi-dim); font: inherit; }
+.entry-dialog-hint { color: var(--pi-muted); margin: 8px 0 0; }
+#entry-dialog.compact-select {
+  max-height: calc(10 * 1.42em + 7em);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+#entry-dialog.compact-select .compact-search,
+#entry-dialog.compact-select .compact-count,
+#entry-dialog.compact-select .entry-dialog-hint { flex: none; }
+#entry-dialog .compact-search {
+  box-sizing: border-box;
+  flex: none;
+  width: 100%;
+  margin: 0 0 6px;
+  padding: 2px 0;
+  color: inherit;
+  background: transparent;
+  border: 0;
+  border-bottom: 1px solid var(--pi-dim);
+  font: inherit;
+}
+#entry-dialog .compact-search:focus { outline: none; border-bottom-color: var(--pi-accent); }
+#entry-dialog .compact-list {
+  flex: none;
+  overflow: hidden;
+  scrollbar-width: none;
+}
+#entry-dialog .compact-list::-webkit-scrollbar { display: none; }
+#entry-dialog .compact-option {
+  display: grid;
+  grid-template-columns: 2ch minmax(12ch, 1fr) auto;
+  column-gap: 1em;
+  align-items: baseline;
+  padding: 0;
+  line-height: 1.42em;
+}
+#entry-dialog .compact-option.active::before { content: none; }
+#entry-dialog .compact-marker { color: var(--pi-accent); width: 2ch; }
+#entry-dialog .compact-label { color: var(--pi-text-bright); }
+#entry-dialog .compact-option.active .compact-label { color: var(--pi-accent); }
+#entry-dialog .compact-hint { color: var(--pi-muted); }
+#entry-dialog .compact-option.active .compact-hint { color: var(--pi-muted); }
+#entry-dialog .compact-count { color: var(--pi-muted); margin: 4px 0 0; }
+.entry-widgets {
+  flex: 0 0 auto;
+  padding: 6px var(--locus-grid-major, 24px);
+  color: var(--pi-muted);
+  white-space: pre-wrap;
+}
+.entry-widgets[hidden] { display: none; }
+.entry-widget { margin: 0 0 0.4em; }
+#entry-ext-status { color: var(--pi-muted); }
+#entry-thinking { cursor: pointer; }
+#entry-dialog:focus { outline: none; }
+@media (max-width: 700px) {
+  #entry-dialog { font-size: clamp(0.55rem, 2.2vw, 0.76rem); }
+  #entry-dialog.session-picker {
+    padding: 8px var(--locus-grid-major, 24px);
+    height: min(64dvh, calc(100dvh - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px) - var(--locus-keys-height, 36dvh)));
+    max-height: min(64dvh, calc(100dvh - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px) - var(--locus-keys-height, 36dvh)));
+  }
+  #entry-dialog .entry-dialog-option { padding: 2px 0; }
+  .entry-session-head { margin: 0 0 4px; gap: 0.6rem; }
+  .entry-dialog-hint { margin: 4px 0 0; }
+  .entry-session-hint { margin: 0 0 6px; }
+}
+
+
+/* The way back to the harness. Once a visitor clicks into their window, every keystroke belongs to
+   that window -- it is a page on another origin, and nothing here can hear ALT+H again. So the
+   harness leaves an edge showing: a strip along the top that pulls it back down, in reach whether
+   the focus is in the garden or inside somebody's game. */
+/* The harness has to stay reachable once a visitor clicks into their own window: focus is inside a
+   page on another origin from then on, and no key pressed there can ever be heard out here. So the
+   top edge of the screen stays pressable. It draws nothing -- the dark sliver it used to paint sat
+   over the work like a piece of unfinished chrome -- and it is one grid unit of empty ground that
+   brings the harness back down. */
+#harness-reach {
+  appearance: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 39;
+  width: 100vw;
+  height: var(--locus-grid-major, 24px);
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+}
+#harness-reach[hidden] { display: none; }
+
+
+/* The prompt grows with what is in it.
+   .entry-input-stack was pinned to exactly one row, so the height the resizer
+   puts on the textarea had nowhere to go: a second line existed in the field and
+   was simply not drawn. The stack now takes its height from its content and
+   keeps the single row as a floor. */
+.entry-input-stack {
+  height: auto;
+  min-height: var(--locus-grid-major, 24px);
+  align-items: flex-start;
+}
+/* The phone's mirror is absolutely placed over that box and so inherits the new
+   height. It has to start at the top and let its text flow inline: centred, a
+   two-line prompt would sit half out of its own bar, and as a flex row the block
+   cursor took a line of its own instead of following the last word. */
+.mobile-input-display {
+  display: block;
+  overflow: visible;
+}
+.mobile-block-cursor {
+  display: inline-block;
+  vertical-align: text-bottom;
+}

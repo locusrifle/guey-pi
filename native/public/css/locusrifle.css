@@ -1,0 +1,265 @@
+/* Grid is the canvas. The drop is Pi's TUI, always half the viewport. */
+html:has(body.locusrifle),
+body.locusrifle {
+  touch-action: none;
+  overscroll-behavior: none;
+  --tui-pageBg: #121212;
+  --pi-bg: #121212;
+  --pi-bg-raised: #121212;
+  --garden: #121212;
+  --paper: #121212;
+  background: #121212;
+}
+body {
+  font-size: 13px;
+  line-height: 1.5;
+  --entry-terminal-height: 50dvh;
+}
+#terminal-entry { touch-action: none; }
+#entry-terminal, #entry-output, .entry-screen {
+  touch-action: pan-y;
+}
+#entry-input { touch-action: manipulation; }
+#session-rail { touch-action: pan-y; }
+body::before {
+  background-position: var(--locus-grid-origin-x) var(--locus-grid-origin-y);
+}
+body.canvas-panning, body.canvas-panning * { cursor: grabbing !important; }
+body.locusrifle .drop-handle { cursor: grab; }
+body.locusrifle #entry-spend { display: none; }
+body.locusrifle .entry-status { display: none; }
+/* A disconnected console must not look like an idle, connected one. */
+body.locusrifle.guey-disconnected .entry-status { display: flex; }
+body.locusrifle #entry-input-zone {
+  min-height: 0;
+  margin: 0;
+  padding: 0;
+}
+body.locusrifle #entry-input-zone::before { display: none; }
+body.locusrifle #entry-input-zone::after {
+  left: 0;
+  right: 0;
+}
+body.locusrifle #entry-work {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 0;
+  min-height: 1.35em;
+  margin: 0;
+  padding: 0 var(--entry-gutter, var(--locus-grid-major, 24px));
+  color: var(--tui-muted, var(--pi-muted));
+  font-style: normal;
+}
+body.locusrifle #entry-work[hidden] { display: flex; }
+body.locusrifle #entry-work::before { content: none; }
+body.locusrifle #entry-work::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: calc(50% - 1px);
+  bottom: auto;
+  flex: none;
+  border-top: 1px solid var(--stock-think-border, var(--tui-accent));
+  height: 0;
+}
+body.locusrifle #entry-work .entry-spinner,
+body.locusrifle #entry-work #entry-pi-label,
+body.locusrifle #entry-work #entry-thinking {
+  position: relative;
+  z-index: 1;
+  background: var(--tui-pageBg, var(--pi-bg));
+  line-height: 1;
+}
+body.locusrifle #entry-work .entry-spinner {
+  width: auto;
+  margin: 0;
+  padding: 0 0.35em 0 0;
+  font-family: var(--font-pi);
+  font-size: 11px;
+  font-style: normal;
+  font-weight: 400;
+}
+body.locusrifle #entry-work #entry-pi-label,
+body.locusrifle #entry-work #entry-thinking {
+  display: block;
+  appearance: none;
+  border: 0;
+  margin: 0;
+  font-family: "Departure Mono", "Commit Mono", ui-monospace, monospace;
+  font-size: 10px;
+  font-weight: 400;
+  letter-spacing: 0.04em;
+  line-height: 1;
+  text-transform: uppercase;
+}
+body.locusrifle #entry-work #entry-pi-label { margin-left: -1ch; padding: 0 0.4em 0 1ch; }
+body.locusrifle #entry-work #entry-thinking { margin-right: -1ch; padding: 0 1ch 0 0; }
+body.locusrifle #entry-thinking:empty { display: none; }
+body.locusrifle #entry-input-zone.working #entry-work,
+body.locusrifle #entry-input-zone.working #entry-pi-label,
+body.locusrifle #entry-input-zone.working #entry-thinking {
+  color: var(--tui-accent, var(--pi-accent));
+}
+body.locusrifle .entry-model-line { display: none; }
+body.locusrifle .entry-input-stack {
+  display: flex;
+  flex-direction: row;
+  align-items: center !important;
+  gap: 0.45em;
+  width: 100%;
+  min-height: 2.7em;
+  height: 2.7em;
+  padding: 0 var(--locus-grid-major, 24px) 0.7em;
+}
+body.locusrifle .entry-prompt { display: none; }
+body.locusrifle #entry-input {
+  flex: 1 1 auto;
+  align-self: center !important;
+  min-width: 0;
+  min-height: 1.2em !important;
+  height: 1.2em !important;
+  line-height: 1.2em !important;
+  padding: 0 !important;
+}
+body.locusrifle .entry-attach {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 1.2em;
+  min-height: 1.2em;
+  width: 1.2em;
+  height: 1.2em;
+  align-self: center !important;
+  line-height: 1;
+}
+body.locusrifle .entry-attach span {
+  display: grid;
+  place-items: center;
+  line-height: 1;
+}
+body.locusrifle #entry-pi-label,
+body.locusrifle #entry-thinking {
+  flex: 0 0 auto;
+  margin: 0;
+  color: inherit;
+  white-space: nowrap;
+}
+#entry-terminal {
+  --pi-bg: var(--tui-pageBg, var(--pi-bg));
+  --pi-bg-raised: var(--tui-pageBg, var(--pi-bg-raised));
+  --pi-text: var(--tui-text, var(--pi-text));
+  --pi-text-bright: var(--tui-userMessageText, var(--pi-text-bright));
+  --pi-muted: var(--tui-muted, var(--pi-muted));
+  --pi-dim: var(--tui-dim, var(--pi-dim));
+  --pi-accent: var(--tui-accent, var(--pi-accent));
+  --pi-cursor: var(--tui-text, var(--pi-cursor));
+  --pi-user: var(--tui-userMessageBg, var(--pi-user));
+  --pi-tool: var(--tui-toolPendingBg, var(--pi-tool));
+  --pi-tool-ok: var(--tui-toolSuccessBg, var(--pi-tool-ok));
+  --pi-tool-error: var(--tui-toolErrorBg, var(--pi-tool-error));
+  --pi-error: var(--tui-error, var(--pi-error));
+  --pi-working: var(--tui-warning, var(--pi-working));
+  --pi-rule: var(--tui-border, var(--pi-rule));
+}
+.entry-attach {
+  position: relative;
+  flex: 0 0 auto;
+  display: grid;
+  place-items: center;
+  min-width: 44px;
+  min-height: 44px;
+  color: var(--pi-accent);
+  cursor: pointer;
+}
+.entry-attach input {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  width: 100%;
+  height: 100%;
+}
+.entry-attach.has-files span { color: var(--pi-text-bright); }
+.entry-pending {
+  flex: 0 0 auto;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 8px var(--locus-grid-major, 24px) 4px;
+}
+.entry-pending[hidden] { display: none; }
+.entry-pending-chip {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  min-height: 44px;
+  border: 1px solid var(--pi-accent);
+  background: transparent;
+  color: var(--pi-text);
+  font: inherit;
+  cursor: pointer;
+}
+.entry-pending-chip .entry-image {
+  display: block;
+  width: 56px;
+  height: 56px;
+  object-fit: cover;
+}
+.entry-pending-chip span {
+  max-width: 12rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  padding: 0 8px;
+}
+.entry-pending-remove {
+  padding: 0 10px 0 0;
+  color: var(--pi-accent);
+}
+.entry-line.user .entry-image,
+#entry-output > .entry-image {
+  display: block;
+  max-width: min(100%, 22rem);
+  max-height: 40vh;
+  width: auto;
+  height: auto;
+  margin: 0.6em 0 0;
+  border: 1px solid var(--pi-accent);
+}
+
+/* OS keyboard covers the bottom; slash grows up so it stays readable. */
+@media (pointer: coarse), (max-width: 700px) {
+  #slash-menu {
+    max-height: min(36dvh, calc(10 * 1.42em));
+    overflow-y: auto;
+  }
+}
+#entry-input[data-dictating]::placeholder { color: var(--pi-accent); }
+#entry-input[data-dictating] { caret-color: var(--pi-accent); }
+
+/* Watching a terminal is a different footing, and the screen should say so
+   without a banner: the panel is ruled in the accent while it is not ours. */
+body.watching #entry-terminal { box-shadow: inset 0 0 0 1px var(--pi-accent); }
+body.watching #entry-source { color: var(--pi-accent); }
+
+/* Jobs sit above the composer as a strip, not a debug dump in the transcript. */
+.entry-widgets {
+  flex: 0 0 auto;
+  padding: 0 var(--locus-grid-major, 24px) 6px;
+  color: var(--pi-muted);
+  letter-spacing: 0.02em;
+}
+.entry-widgets[hidden] { display: none; }
+.entry-widget { margin: 0; }
+.entry-widget-line {
+  font-variant-numeric: tabular-nums;
+  color: var(--pi-text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}

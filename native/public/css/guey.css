@@ -1,0 +1,480 @@
+/* Layout glue. Colors come from /theme.css (stock Pi TUI tokens). */
+:root {
+  --locus-grid-major: 24px;
+  --locus-grid-origin-x: 0px;
+  --locus-grid-origin-y: 0px;
+  --garden: var(--tui-pageBg);
+  --paper: var(--tui-pageBg);
+  --ink: var(--tui-text);
+  --orange: var(--tui-accent);
+  --pi-bg: var(--tui-pageBg);
+  --pi-bg-raised: var(--tui-pageBg);
+  --pi-text: var(--tui-text);
+  --pi-text-bright: var(--tui-text);
+  --pi-muted: var(--tui-muted);
+  --pi-dim: var(--tui-dim);
+  --pi-accent: var(--tui-accent);
+  --pi-cursor: var(--tui-text);
+  --pi-user: var(--tui-userMessageBg);
+  --pi-tool: var(--tui-toolPendingBg);
+  --pi-tool-ok: var(--tui-toolSuccessBg);
+  --pi-tool-error: var(--tui-toolErrorBg);
+  --pi-error: var(--tui-error);
+  --pi-working: var(--tui-accent);
+  --pi-rule: var(--tui-border);
+  --rule-fine: transparent;
+  --rule-minor: var(--tui-borderMuted);
+  --rule-major: transparent;
+  --font-pi: "JetBrainsMono Nerd Font", "JetBrainsMono NF", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+}
+html, body {
+  margin: 0;
+  min-height: 100dvh;
+  background: var(--tui-pageBg);
+  color: var(--tui-text);
+  font-family: var(--font-pi);
+}
+html:has(body.guey-stock),
+body.guey-stock {
+  --tui-pageBg: #121212;
+  --pi-bg: #121212;
+  --pi-bg-raised: #121212;
+  --garden: #121212;
+  --paper: #121212;
+  background: #121212;
+}
+body.guey-tui #entry-terminal,
+body.guey-tui .entry-screen {
+  background: var(--tui-pageBg);
+  color: var(--tui-text);
+}
+
+/* Stock Guey: one full-window conversation, not the locusrifle quake drop.
+   entry-terminal.css sets `#terminal-entry.harness #entry-terminal` to 40dvh
+   (two IDs). These selectors must beat that, not merely restyle body. */
+html:has(body.guey-stock),
+body.guey-stock {
+  height: 100%;
+  overflow: hidden;
+}
+body.guey-stock {
+  --entry-terminal-height: 100dvh;
+}
+body.guey-stock #terminal-entry,
+body.guey-stock #terminal-entry.open,
+body.guey-stock #terminal-entry.harness {
+  position: fixed;
+  inset: 0;
+  height: 100dvh;
+  max-height: 100dvh;
+  transform: none;
+  z-index: 1;
+  pointer-events: auto;
+}
+body.guey-stock #terminal-entry.harness #entry-terminal,
+body.guey-stock #terminal-entry.open #entry-terminal {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100dvh;
+  max-height: 100dvh;
+  min-height: 100dvh;
+  transform: none;
+  border-radius: 0;
+  box-shadow: none;
+}
+body.guey-stock #terminal-entry.harness .entry-screen {
+  height: 100%;
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+body.guey-stock #terminal-entry.harness #entry-output {
+  flex: 1 1 auto;
+  min-height: 0;
+}
+body.guey-stock .drop-handle,
+body.guey-stock #harness-reach,
+body.guey-stock #entry-hint,
+body.guey-stock .entry-attach {
+  display: none;
+}
+body.guey-tui .entry-line.user {
+  margin: 0.45em 0 0.85em;
+  padding: 0.7em 0.9em;
+  background: var(--tui-customMessageBg, var(--pi-user));
+}
+body.guey-tui .entry-compaction {
+  margin: 0.45em 0 0.85em;
+  padding: 0.7em 0.9em;
+  background: var(--tui-customMessageBg, var(--tui-userMessageBg, var(--pi-user)));
+  color: var(--tui-customMessageText, var(--tui-text));
+  cursor: pointer;
+}
+body.guey-tui .entry-compaction-label {
+  appearance: none;
+  display: block;
+  margin: 0 0 0.45em;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--tui-customMessageLabel, var(--tui-accent));
+  font: inherit;
+  cursor: pointer;
+}
+body.guey-tui .entry-compaction-body {
+  color: var(--tui-customMessageText, var(--tui-text));
+  white-space: pre-wrap;
+}
+body.guey-tui .entry-line.thinking {
+  margin: 0.35em 0 0.75em;
+  color: var(--tui-thinkingText, var(--tui-muted));
+  font-style: italic;
+  font-size: 0.95em;
+  line-height: 1.45;
+  white-space: pre-wrap;
+}
+body.guey-tui .entry-tool {
+  margin: 0.45em 0 0.85em;
+  padding: 0.7em 0.9em;
+  border: 0;
+  box-shadow: none;
+  outline: none;
+  background: color-mix(in srgb, #000 22%, var(--tui-toolPendingBg, var(--tui-pageBg)));
+}
+body.guey-tui .entry-tool.ok {
+  background: color-mix(in srgb, #000 22%, var(--tui-toolSuccessBg, var(--tui-pageBg)));
+}
+body.guey-tui .entry-tool.error {
+  background: var(--tui-toolErrorBg, var(--pi-tool-error));
+}
+body.guey-tui .entry-tool-title {
+  appearance: none;
+  background: transparent;
+  border: 0;
+  padding: 0;
+  margin: 0;
+  width: 100%;
+  font: inherit;
+  color: var(--tui-toolTitle, var(--tui-text));
+  text-align: left;
+  cursor: pointer;
+  display: flex;
+  align-items: baseline;
+  gap: 0.5em;
+}
+body.guey-tui .entry-tool-cmd {
+  color: var(--tui-toolTitle, var(--tui-text));
+}
+body.guey-tui .entry-tool-cmd strong {
+  font-weight: 700;
+  color: var(--tui-toolTitle, var(--tui-text));
+}
+body.guey-tui .entry-tool-path {
+  color: var(--tui-accent);
+}
+body.guey-tui .entry-tool-skill {
+  color: var(--tui-customMessageLabel, var(--tui-accent));
+}
+body.guey-tui .entry-line.assistant code,
+body.guey-tui .entry-line.thinking code {
+  color: var(--tui-mdCode, var(--tui-accent));
+}
+body.guey-tui .entry-tool-timeout,
+body.guey-tui .entry-tool-meta {
+  color: var(--tui-muted);
+  font-weight: 400;
+}
+body.guey-tui .entry-tool-summary {
+  display: none;
+}
+body.guey-tui .entry-tool-output {
+  margin: 0.35em 0 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--tui-toolOutput, var(--tui-muted));
+  white-space: pre-wrap;
+}
+body.guey-tui .entry-prompt {
+  display: none;
+}
+body.guey-tui #entry-input::placeholder {
+  color: transparent;
+}
+body.guey-tui {
+  --stock-think-border: var(--tui-thinkingMedium, var(--tui-accent));
+  font-variant-emoji: text;
+}
+body.guey-tui .entry-tool-output,
+body.guey-tui .entry-line,
+body.guey-tui pre {
+  font-variant-emoji: text;
+}
+body.guey-tui[data-thinking="off"] { --stock-think-border: var(--tui-thinkingOff, var(--tui-borderMuted)); }
+body.guey-tui[data-thinking="minimal"] { --stock-think-border: var(--tui-thinkingMinimal, var(--tui-borderMuted)); }
+body.guey-tui[data-thinking="low"] { --stock-think-border: var(--tui-thinkingLow, var(--tui-accent)); }
+body.guey-tui[data-thinking="high"] { --stock-think-border: var(--tui-thinkingHigh, var(--tui-accent)); }
+body.guey-tui[data-thinking="xhigh"],
+body.guey-tui[data-thinking="max"] { --stock-think-border: var(--tui-thinkingXhigh, var(--tui-accent)); }
+body.guey-tui #entry-input-zone {
+  border-top-color: var(--stock-think-border);
+}
+body.guey-tui .entry-status {
+  border-top-color: var(--stock-think-border);
+  color: var(--tui-dim, var(--pi-muted));
+}
+body.guey-tui .entry-status-line {
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+body.guey-tui #entry-spend {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+body.guey-tui #entry-source,
+body.guey-tui #entry-session-name,
+body.guey-tui #entry-cwd,
+body.guey-tui #entry-context {
+  display: none;
+}
+body.guey-tui .entry-flash {
+  flex: 0 0 auto;
+  padding: 0.35em var(--locus-grid-major, 24px) 0.15em;
+  color: var(--tui-muted, var(--pi-muted));
+}
+body.guey-tui .entry-flash[hidden] { display: none; }
+body.guey-tui .entry-queue {
+  flex: 0 0 auto;
+  padding: 0.35em var(--entry-gutter, 24px) 0.2em;
+  color: var(--tui-dim, var(--pi-muted));
+}
+body.guey-tui .entry-queue[hidden] { display: none; }
+body.guey-tui .entry-queue-line,
+body.guey-tui .entry-queue-hint {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+body.guey-tui .entry-queue-line {
+  appearance: none;
+  display: block;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+body.guey-tui .entry-queue-line:hover { color: var(--tui-accent, var(--pi-accent)); }
+body.guey-tui .entry-queue-hint { opacity: 0.85; }
+body.guey-tui #entry-input-zone {
+  position: relative;
+  min-height: 0;
+  margin: 0;
+  padding: 0.2em var(--locus-grid-major, 24px);
+  justify-content: center;
+  border: 0;
+}
+body.guey-tui #entry-input-zone::before,
+body.guey-tui #entry-input-zone::after {
+  content: "";
+  position: absolute;
+  left: var(--locus-grid-major, 24px);
+  right: var(--locus-grid-major, 24px);
+  border-top: 1px solid var(--stock-think-border);
+}
+body.guey-tui #entry-input-zone::before { top: 0; }
+body.guey-tui #entry-input-zone::after { bottom: 0; }
+body.guey-tui #entry-input-zone.working {
+  justify-content: flex-start;
+  padding-top: 0.1em;
+}
+body.guey-tui #entry-input-zone.working::before { display: none; }
+body.guey-tui #entry-input {
+  height: auto;
+  min-height: 1.35em;
+  line-height: 1.35em;
+  padding: 0.15em 0;
+  overflow: hidden;
+  caret-shape: block;
+  caret-animation: manual;
+}
+body.guey-tui .entry-input-stack {
+  min-height: 1.65em;
+  height: auto;
+  align-items: center;
+}
+body.guey-tui .entry-status {
+  border-top: 0;
+}
+body.guey-tui .entry-screen:has(#entry-dialog.tui-settings:not([hidden])) #entry-input-zone {
+  display: flex !important;
+  justify-content: flex-start;
+  min-height: unset;
+  padding-top: 0.15em;
+}
+body.guey-tui .entry-screen:has(#entry-dialog.tui-settings:not([hidden])) .entry-prompt {
+  display: inline;
+  color: var(--stock-think-border);
+}
+body.guey-tui #entry-dialog.tui-settings {
+  padding: 0.45em 0 0.3em;
+  border: 0;
+  max-height: none;
+  overflow: hidden;
+}
+body.guey-tui .tui-setting-heading {
+  margin: 0 0 0.35em;
+  color: var(--tui-accent);
+  font-weight: 700;
+}
+body.guey-tui .tui-setting-lead {
+  margin: 0 0 0.7em;
+  color: var(--tui-muted, var(--pi-muted));
+}
+body.guey-tui .tui-setting {
+  appearance: none;
+  -webkit-appearance: none;
+  display: grid;
+  grid-template-columns: 2ch 1fr auto;
+  column-gap: 1em;
+  align-items: baseline;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  font: inherit;
+  color: inherit;
+  text-align: left;
+  line-height: 1.42em;
+  cursor: pointer;
+}
+body.guey-tui .tui-setting-label { color: var(--tui-text, var(--pi-text-bright)); }
+body.guey-tui .tui-setting-value { color: var(--tui-muted, var(--pi-muted)); }
+body.guey-tui .tui-setting.active,
+body.guey-tui .tui-setting.active .tui-setting-label,
+body.guey-tui .tui-setting.active .tui-setting-value,
+body.guey-tui .tui-setting.active .slash-marker {
+  color: var(--tui-accent, var(--pi-accent));
+}
+body.guey-tui .tui-setting-desc {
+  color: var(--tui-muted, var(--pi-muted));
+  margin: 0.85em 0 0.25em;
+}
+body.guey-tui #slash-menu {
+  flex: none;
+  margin: 0;
+  padding: 0.25em 0.6em 0.35em;
+  max-height: none;
+  background: transparent;
+  border: 0;
+}
+body.guey-tui #entry-work {
+  display: flex;
+  align-items: center;
+  gap: 0.65em;
+  min-height: 1.35em;
+  margin: 0;
+  padding: 0.05em 0 0.15em;
+  color: var(--tui-accent, var(--stock-think-border));
+  font-style: italic;
+}
+body.guey-tui #entry-work .entry-spinner {
+  flex: none;
+  width: 1.15em;
+  font-style: normal;
+  font-size: 1.2em;
+  font-weight: 400;
+  line-height: 1;
+  text-align: center;
+  color: inherit;
+}
+body.guey-tui #entry-work span {
+  color: inherit;
+}
+body.guey-tui #entry-work[hidden] { display: none; }
+body.guey-tui #entry-work::before {
+  content: "—";
+  flex: none;
+  color: var(--stock-think-border);
+}
+body.guey-tui #entry-work::after {
+  content: "";
+  flex: 1 1 auto;
+  border-top: 1px solid var(--stock-think-border);
+  height: 0;
+}
+body.guey-tui #slash-menu {
+  background: transparent;
+  max-height: calc(6 * 1.42em);
+  padding: 0.15em 0 0;
+}
+body.guey-tui .slash-item.active .slash-name,
+body.guey-tui .slash-item.active .slash-desc,
+body.guey-tui .slash-item.active .slash-marker {
+  color: var(--tui-accent, var(--pi-accent));
+}
+body.guey-tui #entry-pi-label {
+  appearance: none;
+  background: transparent;
+  border: 0;
+  padding: 0;
+  margin: 0 0 0 auto;
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+}
+body.guey-tui #entry-thinking {
+  margin-left: 0.4em;
+}
+#session-rail {
+  position: absolute;
+  inset: 0;
+  z-index: 20;
+  display: flex;
+  flex-direction: column;
+  gap: 0.55em;
+  margin: 0;
+  padding: 0.8em 0.9em;
+  overflow: auto;
+  background: var(--tui-cardBg, var(--pi-bg, #111));
+  color: var(--tui-text, var(--pi-text, #eee));
+  transform: translateX(-100%);
+  transition: transform 160ms ease;
+}
+#session-rail.open { transform: translateX(0); }
+#session-rail[hidden] { display: none !important; }
+.session-rail-heading {
+  margin: 0;
+  color: var(--tui-accent, var(--pi-accent, #f27722));
+  font-weight: 700;
+}
+.session-rail-new,
+.session-rail-item {
+  appearance: none;
+  display: block;
+  width: 100%;
+  margin: 0;
+  padding: 0.55em 0.4em;
+  border: 0;
+  border-bottom: 1px solid var(--tui-border, var(--pi-rule, #333));
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+.session-rail-new { color: var(--tui-accent, var(--pi-accent, #f27722)); }
+.session-rail-title { display: block; }
+.session-rail-note {
+  display: block;
+  color: var(--tui-muted, var(--pi-muted, #888));
+  font-size: 0.9em;
+}
+.session-rail-item.active .session-rail-title { color: var(--tui-accent, var(--pi-accent, #f27722)); }

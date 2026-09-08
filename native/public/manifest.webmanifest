@@ -1,0 +1,16 @@
+{
+  "name": "locusrifle",
+  "short_name": "locusrifle",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#24292c",
+  "theme_color": "#24292c",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}

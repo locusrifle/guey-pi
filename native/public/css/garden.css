@@ -1,0 +1,49 @@
+@font-face { font-family: "Commit Mono"; src: url("../fonts/CommitMono-400-Regular.otf"); font-display: swap; }
+:root {
+  --garden: #e8e6df; --panel: #f4f1e9; --panel-raised: #24292c; --panel-band: #32383c; --panel-text: #d9dfe2; --panel-bright: #eef1f3; --panel-rule: #454a4d; --paper: #e8e6df; --ink: #24292c; --muted: #737b80; --orange: #f27722;
+  --strand-a: #434b4f; --strand-b: #f27722; --rule-fine: rgba(36,41,44,.07); --rule-minor: rgba(36,41,44,.12); --rule-major: rgba(36,41,44,.2);
+  --locus-grid-major: 24px; --locus-grid-origin-x: 0px; --locus-grid-origin-y: 0px;
+  color-scheme: light dark; font-family: "Commit Mono", ui-monospace, monospace;
+}
+@media (prefers-color-scheme: dark) { :root { --garden: #24292c; --paper: #24292c; --panel: #303639; --panel-raised: #292f33; --panel-band: #343b40; --panel-text: #ebe7dc; --panel-rule: #4d585e; --ink: #ebe7dc; --muted: #99a1a5; --rule-fine: rgba(235,231,220,.05); --rule-minor: rgba(235,231,220,.1); --rule-major: rgba(235,231,220,.18); } }
+* { box-sizing: border-box; }
+html, body { margin: 0; width: 100%; height: 100%; overflow: hidden; background: var(--garden); color: var(--ink); }
+body::before { content: ""; position: fixed; inset: 0; background-image: linear-gradient(var(--rule-minor) 1px, transparent 1px), linear-gradient(90deg,var(--rule-minor) 1px,transparent 1px); background-size: var(--locus-grid-major) var(--locus-grid-major); pointer-events: none; }
+#intro { position: fixed; inset: 0; z-index: 9; display: grid; place-items: center; transition: opacity .35s; }
+#intro.gone { opacity: 0; pointer-events: none; }
+[hidden] { display: none !important; }
+button, textarea { font: inherit; }
+
+/* The opening instruction is written into the ruling: one glyph occupies one square. */
+#entry-hint {
+  --hint-fine: 4px;
+  --hint-unit: min(var(--locus-grid-major, 24px), max(var(--hint-fine), round(down, calc((100vw - var(--locus-grid-major, 24px)) / var(--hint-cells, 15)), var(--hint-fine))));
+  --hint-width: calc(var(--hint-cells, 15) * var(--hint-unit));
+  position: absolute;
+  left: calc(var(--locus-grid-origin-x, 0px) + round(calc(50vw - var(--hint-width) / 2 - var(--locus-grid-origin-x, 0px)), var(--hint-unit)));
+  top: calc(var(--locus-grid-origin-y, 0px) + var(--hint-unit) * 3);
+  z-index: 9;
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: var(--hint-unit);
+  align-items: center;
+  width: var(--hint-width);
+  height: var(--hint-unit);
+  margin: 0;
+  padding: 0;
+  color: var(--ink);
+  font-family: "Departure Mono", "Commit Mono", ui-monospace, monospace;
+  font-size: calc(var(--hint-unit) * .72);
+  line-height: var(--hint-unit);
+  letter-spacing: 0;
+  text-transform: uppercase;
+  pointer-events: none;
+  animation: hint-arrive 420ms ease 120ms backwards;
+}
+#entry-hint[hidden] { display: none; }
+#entry-hint .part { display: contents; }
+#entry-hint .cell { display: block; width: var(--hint-unit); height: var(--hint-unit); font-weight: inherit; text-align: center; }
+#entry-hint .key { color: var(--orange); }
+#entry-hint .sep { color: color-mix(in srgb, var(--ink) 45%, transparent); }
+#entry-hint.pressable { pointer-events: auto; cursor: pointer; }
+@keyframes hint-arrive { from { opacity: 0; } to { opacity: 1; } }

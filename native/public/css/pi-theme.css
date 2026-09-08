@@ -1,0 +1,31 @@
+/* Edit this file to retune the drop. Orange on the lighter brand grey.
+   The terminal's own names are held here, but the ones that belong to the
+   garden's palette -- the panel it sits on, the ink it writes in, the ground it
+   drops over -- are aliases of the tokens in garden.css, so the dark scheme
+   is defined in exactly one place and reaches here whatever order the
+   stylesheets happen to load in. What stays literal below is panel-internal and
+   the same in both schemes: it is always light type on a dark surface. */
+:root {
+  --pi-bg: #24292c;
+  --pi-bg-raised: #24292c;
+  --pi-text: var(--panel-text);
+  --pi-text-bright: var(--panel-bright);
+  --pi-muted: #808080;
+  --pi-dim: var(--panel-rule);
+  --pi-accent: var(--orange);
+  --pi-cursor: #ffffff;
+  --pi-user: var(--panel-band);
+  --pi-tool: var(--panel-raised);
+  --pi-tool-ok: var(--panel-raised);
+  --pi-tool-error: #3c2828;
+  --pi-error: #cc6666;
+  --pi-working: #e58a52;
+  --pi-rule: var(--pi-accent);
+  --garden: var(--paper);
+  --garden-ink: var(--panel);
+  --garden-line: #252f3d;
+  --note-bg: var(--panel-raised);
+  --note-border: #3a4144;
+  --font-pi: "Commit Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  --font-pi-ui: "Departure Mono", var(--font-pi);
+}

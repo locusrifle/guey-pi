@@ -1,0 +1,103 @@
+/* Laptop screen on the infinite grid. Controls hang off the surface. */
+#locus-world {
+  position: fixed;
+  left: 0;
+  top: 0;
+  z-index: 1;
+  width: 0;
+  height: 0;
+  pointer-events: none;
+  transform: translate(var(--locus-grid-origin-x, 0px), var(--locus-grid-origin-y, 0px));
+}
+#locus-world > * { pointer-events: auto; }
+
+#desk-panel {
+  position: absolute;
+  z-index: 1;
+  margin: 0;
+  padding: 0;
+  background: transparent;
+  color: var(--ink, #eee);
+  border: 0;
+  box-shadow: none;
+  overflow: visible;
+}
+#desk-panel .desk-viewport {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: color-mix(in srgb, var(--garden, #111) 20%, transparent);
+  border: 1px solid var(--orange, var(--pi-accent, #f27722));
+}
+#desk-panel .desk-screen {
+  position: absolute;
+  background: transparent;
+  overflow: hidden;
+  touch-action: none;
+}
+#desk-panel .desk-screen > div {
+  display: block !important;
+  width: 100% !important;
+  height: 100% !important;
+  overflow: hidden !important;
+  background: transparent !important;
+}
+#desk-panel .desk-screen canvas {
+  display: block;
+  width: 100% !important;
+  height: 100% !important;
+  margin: 0 !important;
+  object-fit: fill;
+}
+
+#desk-panel .desk-controls {
+  position: absolute;
+  left: 100%;
+  top: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 6px;
+  margin-left: var(--locus-grid-major, 24px);
+  padding: 0;
+  background: transparent;
+  cursor: grab;
+  touch-action: none;
+}
+#desk-panel .desk-status {
+  color: var(--muted, #9fa4ab);
+  font-size: 12px;
+}
+#desk-panel .desk-controls button {
+  margin: 0;
+  padding: 2px 8px;
+  min-height: 28px;
+  border: 1px solid var(--orange, var(--pi-accent, #f27722));
+  background: color-mix(in srgb, var(--garden, #111) 82%, transparent);
+  color: inherit;
+  font: inherit;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+#desk-panel .desk-controls button[disabled] { opacity: 0.4; cursor: default; }
+#desk-panel .desk-controls button[data-held="true"],
+#desk-panel .desk-controls button[aria-pressed="true"] {
+  background: color-mix(in srgb, var(--orange, var(--pi-accent, #f27722)) 28%, transparent);
+}
+
+#desk-panel .desk-corner {
+  position: absolute;
+  z-index: 3;
+  width: calc(var(--locus-grid-major, 24px) * 0.75);
+  height: calc(var(--locus-grid-major, 24px) * 0.75);
+  margin: 0;
+  padding: 0;
+  background: transparent;
+  touch-action: none;
+}
+#desk-panel .desk-corner-nw { left: 0; top: 0; cursor: nwse-resize; }
+#desk-panel .desk-corner-ne { right: 0; top: 0; cursor: nesw-resize; }
+#desk-panel .desk-corner-sw { left: 0; bottom: 0; cursor: nesw-resize; }
+#desk-panel .desk-corner-se { right: 0; bottom: 0; cursor: nwse-resize; }

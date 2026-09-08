@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#e8e6df" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#24292c" media="(prefers-color-scheme: dark)">
+<title>Guey</title>
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/theme.css" id="tui-theme">
+<link rel="stylesheet" href="/css/pi-theme.css">
+<link rel="stylesheet" href="/css/entry-terminal.css">
+<link rel="stylesheet" href="/css/guey.css">
+</head>
+<body class="guey-stock guey-tui">
+
+<section id="terminal-entry" class="harness open stock" aria-label="pi">
+	<figure id="entry-terminal">
+		<div class="entry-screen">
+			<div id="entry-output" aria-live="polite"></div>
+			<div id="entry-widgets" class="entry-widgets" hidden></div>
+			<div id="entry-input-zone">
+				<span class="entry-input-stack"><span class="entry-prompt" aria-hidden="true">&rsaquo;</span><textarea id="entry-input" rows="1" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="ask pi" aria-label="Prompt pi"></textarea></span>
+				<section id="entry-dialog" hidden></section>
+			</div>
+			<div id="slash-menu" hidden></div>
+			<div class="entry-status">
+				<div class="entry-status-line">
+					<span id="entry-spend">$0.000</span>
+					<span id="entry-source"></span>
+					<span id="entry-session-name"></span>
+					<span id="entry-cwd"></span>
+					<span id="entry-context"></span>
+					<button type="button" id="entry-pi-label" title="pick the model">pi</button>
+					<span id="entry-thinking"></span>
+					<span id="entry-model-status">stopped</span>
+				</div>
+			</div>
+		</div>
+	</figure>
+</section>
+
+<script type="module" src="/js/stock.js"></script>
+</body>
+</html>
